@@ -2243,7 +2243,7 @@ function toggleNav() {
 
 function cFetch(url = "", data = undefined, operation = "POST") {
   if (data) {
-    return fetch("./api/" + url, {
+    return fetch("/api/" + url, {
       method: operation,
       cache: "default",
       headers: {
