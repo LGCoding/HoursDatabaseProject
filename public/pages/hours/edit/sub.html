@@ -1,0 +1,252 @@
+<style></style>
+<link rel="stylesheet" href="../../../global.css" />
+
+<script src="../../../global.js"></script>
+<script>
+  "use strict";
+  let dateB2OMax, dateB2OMin, projectsO;
+
+  let userId;
+  let userName;
+
+  let prC = [];
+  let nameT = [];
+  let lastPrC = 0;
+
+  let projects;
+
+  function updatePerson() {
+    console.log("in");
+    lastPrC = 0;
+    projectsO.innerHTML = "";
+    let person = names.find((ell) => ell.name === adminFormDropInput.value);
+    if (!person) return;
+    prC = [];
+    nameT = [];
+    for (let i in person.projects) {
+      for (let j in person.projects[i]) {
+        if (check2(person.projects[i][j].date)) continue;
+        nameT.push(i);
+        prC.push(person.projects[i][j]);
+      }
+    }
+    prC.sort((a, b) => new Date(b.date) - new Date(a.date));
+    for (let i = 0; i < prC.length && i < maxDisp; i++) {
+      let div = document.createElement("div");
+      div.className = "projectO";
+      let id = getRandomArbitrary(-100000, 100000);
+      let b = prC[i].date.split(/\D/);
+      div.innerHTML = `<input onclick="edit()" id="${id}" name="ex" value="${
+        nameT[i]
+      }" type='radio'><label for=${id} class='namedB2'>${
+        nameT[i]
+      }</label><label for=${id}>:</label>
+                    
+                    <label for=${id}>Hours:</label> <label for=${id} class='hoursdB2'>${
+        prC[i].hours
+      }</label>;
+                    <label for=${id}>Date:</label> <label for=${id} class='datedB2'>${
+        b[1] + "/" + b[2] + "/" + b[0]
+      }</label>`;
+      projectsO.appendChild(div);
+      lastPrC++;
+    }
+  }
+
+  function changeReport(preT, preD) {
+    let day = document.getElementById("days");
+    let isbyDay = preD
+      ? "true" == preD
+      : document.getElementById("isByDay").checked;
+    reportFormDropInput.disabled = false;
+    switch (preT ? preT : getChecked()) {
+      case "leaderBoard":
+        {
+          createDropDowns("", 2);
+          reportFormDropInput.value = "";
+          if (!preT) day.innerHTML = "Month";
+          reportFormDropInput.disabled = true;
+          getLeaderBoardDisplayData(isbyDay);
+        }
+        break;
+      case "club":
+        {
+          if (!preT) day.innerHTML = "Day";
+          createDropDowns("", 2);
+          reportFormDropInput.value = "";
+          filterFunction(2);
+          reportFormDropInput.disabled = true;
+          getClubDisplayData(isbyDay);
+        }
+        break;
+      case "person":
+        {
+          createDropDowns(names, 2);
+          let temp = false;
+          for (let i in projects) {
+            if (names[i].name === (preI ? preI : reportFormDropInput.value)) {
+              temp = true;
+            }
+          }
+          if (!temp) {
+            reportFormDropInput.value = names[0].name;
+            filterFunction(2);
+          }
+
+          if (!preT) day.innerHTML = "Day";
+          getPersonDisplayData(isbyDay);
+        }
+        break;
+      default:
+        {
+          createDropDowns(projects, 2);
+          let temp = false;
+          for (let i in projects) {
+            if (
+              projects[i].name === (preI ? preI : reportFormDropInput.value)
+            ) {
+              temp = true;
+            }
+          }
+          if (!temp) {
+            reportFormDropInput.value = projects[0].name;
+            filterFunction(2);
+          }
+          if (!preT) day.innerHTML = "Day";
+          getProjectDisplayData(isbyDay);
+        }
+        break;
+    }
+  }
+
+  function createDropDowns(things, dropdownNum) {
+    if (dropdownNum === 0) {
+      basicDropDown.innerHTML = "";
+    } else if (dropdownNum === 1) {
+      adminDropDown.innerHTML = "";
+    } else if (dropdownNum === 2) {
+      reportDropDown.innerHTML = "";
+    }
+    if (!things) return;
+    for (let i in things) {
+      let el = document.createElement("button");
+      el.class = "formButton";
+      el.onclick = insertData;
+      if (!things[i].isActive) el.style.color = "darkblue";
+      if (!things[i].isActive) el.style.fontWeight = "bold";
+
+      if (dropdownNum === 0) {
+        el.setAttribute("num", 0);
+        if (!things[i].isActive) {
+          continue;
+        }
+      } else if (dropdownNum === 1) {
+        el.setAttribute("num", 1);
+        if (!things[i].isActive) {
+          continue;
+        }
+      } else if (dropdownNum === 2) {
+        el.setAttribute("num", 2);
+      }
+      el.type = "button";
+      el.innerHTML = things[i].name;
+      if (dropdownNum === 0) {
+        basicDropDown.appendChild(el);
+      } else if (dropdownNum === 1) {
+        adminDropDown.appendChild(el);
+      } else if (dropdownNum === 2) {
+        reportDropDown.appendChild(el);
+      }
+    }
+  }
+
+  function check2(thing) {
+    let b1 = thing.split(/\D/);
+    let vdate = new Date(parseInt(b1[0]), parseInt(b1[1]), parseInt(b1[2]));
+
+    let b2 = dateB2OMin.value.split(/\D/);
+    let b3 = dateB2OMax.value.split(/\D/);
+    if (
+      !(
+        (!dateB2OMin.value ||
+          vdate >=
+            new Date(parseInt(b2[0]), parseInt(b2[1]), parseInt(b2[2]))) &&
+        (!dateB2OMax.value ||
+          vdate <= new Date(parseInt(b3[0]), parseInt(b3[1]), parseInt(b3[2])))
+      )
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function extend() {
+    let templastPrC = lastPrC;
+    for (let i = lastPrC; i < prC.length && i < maxDisp + lastPrC; i++) {
+      if (check2(prC[i].date)) continue;
+      let div = document.createElement("div");
+      div.className = "projectO";
+      let b = prC[i].date.split(/\D/);
+      let id = getRandomArbitrary(-100000, 100000);
+      div.innerHTML = `<input onclick="edit()" id="${id}" name="ex" value="${
+        nameT[i]
+      }" type='radio'><label for=${id} class='namedB2'>${
+        nameT[i]
+      }</label><label for=${id}>:</label>
+                    
+                    <label for=${id}>Hours:</label> <label for=${id} class='hoursdB2'>${
+        prC[i].hours
+      }</label>;
+                    <label for=${id}>Date:</label> <label for=${id} class='datedB2'>${
+        b[1] + "/" + b[2] + "/" + b[0]
+      }</label>`;
+      projectsO.appendChild(div);
+      templastPrC++;
+    }
+    lastPrC = templastPrC;
+  }
+
+  window.onload = () => {
+    dateB2OMax = document.getElementById("dateB2Max");
+    dateB2OMin = document.getElementById("dateB2Min");
+    projectsO = document.getElementById("projects");
+
+    userId = getCookie("userId");
+    userName = getCookie("userName");
+    console.log(userId);
+
+    //fetches
+    projects = cFetch("projects/user/" + userId, {}, "GET");
+
+    updatePerson();
+  };
+</script>
+
+<div class="form" id="title">Hour Editor</div>
+<div class="block" id="block2">
+  <span>
+    <label for="dateB2">Select Start and End Date</label><br />
+    <input
+      onchange="updatePerson()"
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MinDate.."
+      autocomplete="off"
+      id="dateB2Min"
+      onblur="changeReport();"
+    />
+    <input
+      onchange="updatePerson()"
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MaxDate.."
+      autocomplete="off"
+      id="dateB2Max"
+      onblur="changeReport();"
+    /> </span
+  ><br />
+  <div id="projects"></div>
+  <button type="button" class="formButton" id="extend">▼</button>
+</div>

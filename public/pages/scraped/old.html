@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hour Reporter</title>
+    <script src="data.js"></script>
+    <script src="global.js"></script>
+    <script src="moment.js"></script>
+    <script src="./package/dist/chart.js"></script>
+
+    <script src="print.min.js"></script>
+    <link rel="stylesheet" href="global.css" />
+    <link rel="stylesheet" href="print.min.css" />
+    <link rel="icon" href="./favicon.png" type="image/png" />
+    <script>
+      let token;
+      function myFunction() {
+        var x = document.getElementById("myTopnav");
+        if (x.className === "topnav") {
+          x.className += " responsive";
+        } else {
+          x.className = "topnav";
+        }
+      }
+
+      function logSign() {
+        if (document.getElementById("signLog").getAttribute("v") === "1") {
+          //signup
+          if (
+            document.getElementById("password1Input").value ===
+            document.getElementById("password2Input").value
+          ) {
+            cFetch("users/", {
+              displayName: document.getElementById("nameInput").value,
+              email: document.getElementById("emailInput").value,
+              password: document.getElementById("password1Input").value,
+              memberType: document
+                .getElementById("memberType")
+                .getAttribute("v"),
+            })
+              .then((r) =>
+                r.json().then((json) => ({ ok: r.ok, status: r.status, json }))
+              )
+              .then((response) => {
+                if (!response.ok || response.status !== 201) {
+                  throw new Error(response.json.message);
+                }
+                alert("good");
+              })
+              .catch((err) => {
+                if (err.message.lastIndexOf("displayName") !== -1) {
+                  alert("Name can only contain letters");
+                } else if (err.message.lastIndexOf("!@#$%^&.*") !== -1) {
+                  alert(
+                    'Password must contain at least on number and one of these caracters special "!@#$%^&.*"'
+                  );
+                } else if (err.message.lastIndexOf("[") !== -1) {
+                  alert(
+                    err.message.substring(
+                      err.message.lastIndexOf("[") + 1,
+                      err.message.lastIndexOf("]")
+                    )
+                  );
+                } else {
+                  alert(err.message);
+                }
+                console.log(err.message);
+              });
+          } else {
+            alert("Passwords do not match");
+          }
+        }
+
+        cFetch("sessions/", {
+          email: document.getElementById("emailInput").value,
+          password: document.getElementById("password2Input").value,
+        })
+          .then((r) =>
+            r.json().then((json) => ({ ok: r.ok, status: r.status, json }))
+          )
+          .then((response) => {
+            if (!response.ok || response.status !== 201) {
+              throw new Error(response.json.message);
+            }
+            document.getElementById("loginOuterDiv").style.display = "none";
+            sessionStorage.setItem("userId", response.json.userId);
+            sessionStorage.setItem("userName", response.json.displayName);
+            sessionStorage.setItem("token", response.json.token);
+            token = response.json.token;
+          })
+          .catch((err) => {
+            alert("Login Failed");
+          });
+      }
+    </script>
+  </head>
+  <!-- onclick="bodyClick()" -->
+  <body style="display: flex">
+    <!-- Top stuff -->
+    <div class="topnav" id="myTopnav">
+      <!-- onclick="homeSwitch(this) " -->
+      <a
+        type="button"
+        id="homeB"
+        class="active"
+        target="mainFrame"
+        href="pages/hours/input/sub.html"
+        >Home</a
+      >
+      <!-- onclick="hourEditSwitch(this)" -->
+      <a
+        type="button"
+        id="pastB"
+        class=""
+        target="mainFrame"
+        href="pages/hours/edit/sub.html"
+        >Past hours</a
+      >
+      <!-- onclick="reportSwitch(this)" -->
+      <a
+        type="button"
+        id="reportB"
+        class=""
+        target="mainFrame"
+        href="pages/report/sub.html"
+        >Reports</a
+      >
+      <!-- onclick="addProjectSwitch(this)" -->
+      <a
+        type="button"
+        id="adminB"
+        class=""
+        target="mainFrame"
+        href="pages/project/input/sub.html"
+        >Add project</a
+      >
+      <!-- onclick="editProjectsSwitch(this)" -->
+      <a
+        type="button"
+        id="adminCB"
+        class=""
+        target="mainFrame"
+        href="pages/project/edit/sub.html"
+        >Edit project</a
+      >
+      <!-- onclick="addPersonSwitch(this)" -->
+      <a
+        type="button"
+        id="addPB"
+        class=""
+        target="mainFrame"
+        href="pages/person/input/sub.html"
+        >Add Person</a
+      >
+      <!-- onclick="editPersonSwitch(this)" -->
+      <a
+        type="button"
+        id="editPB"
+        class=""
+        target="mainFrame"
+        href="pages/person/edit/sub.html"
+        >Edit Person</a
+      >
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()"
+        ><strong>&#8801;</strong></a
+      >
+    </div>
+
+    <iframe
+      src="pages/hours/input/sub.html"
+      id="mainFrame"
+      name="mainFrame"
+      frameborder="0"
+    ></iframe>
+    <div id="loginOuterDiv">
+      <div id="loginDiv">
+        <input
+          type="email"
+          id="emailInput"
+          class="formInput dropInput"
+          placeholder="Email.."
+        />
+        <div id="namesdf">
+          <input
+            id="nameInput"
+            type="text"
+            class="formInput dropInput"
+            placeholder="Name.."
+          />
+          <div class="login-dropdown">
+            <button id="logButton" class="login-dropbtn">Club Member</button>
+            <div id="memberType" v="0" class="login-dropdown-content">
+              <a
+                onclick="document.getElementById('memberType').setAttribute('v', '0');document.getElementById('logButton').innerHTML = 'Club Member';"
+                >Club Member</a
+              >
+              <a
+                onclick="document.getElementById('memberType').setAttribute('v', '1');document.getElementById('logButton').innerHTML = 'Non Weston Memeber';"
+                >Non Weston Memeber</a
+              >
+              <a
+                onclick="document.getElementById('memberType').setAttribute('v', '2');document.getElementById('logButton').innerHTML = 'Non Member Adult';"
+                >Non Member Adult</a
+              >
+              <a
+                onclick="document.getElementById('memberType').setAttribute('v', '3');document.getElementById('logButton').innerHTML = 'Non Member Kid Interact';"
+                >Non Member Kid Interact</a
+              >
+              <a
+                onclick="document.getElementById('memberType').setAttribute('v', '4');document.getElementById('logButton').innerHTML = 'Non Member Kid';"
+                >Non Member Kid</a
+              >
+            </div>
+          </div>
+          <br />
+          <input
+            style="margin-top: 5px"
+            type="password"
+            id="password1Input"
+            class="formInput dropInput"
+            placeholder="Password.."
+          />
+        </div>
+        <input
+          style="margin-top: 5px"
+          type="password"
+          id="password2Input"
+          class="formInput dropInput"
+          placeholder="Password.."
+        />
+        <input
+          style="margin: 5px"
+          class="formButton"
+          type="button"
+          value="Create Account"
+          id="signLog"
+          v="0"
+          onclick="this.value = (this.getAttribute('v') === '0') ? 'Already have an account' : 'Create Account';
+           this.setAttribute('v',(this.getAttribute('v') === '0') ? '1' : '0');
+           document.getElementById('namesdf').style.display = ('v',(this.getAttribute('v') === '0') ? 'none' : 'block'); "
+        />
+        <input
+          style="margin: 5px"
+          class="formButton"
+          type="button"
+          onclick="logSign()"
+          value="Submit"
+        />
+      </div>
+    </div>
+  </body>
+</html>

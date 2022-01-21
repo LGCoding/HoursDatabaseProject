@@ -1,0 +1,42 @@
+<style></style>
+<link rel="stylesheet" href="../../../global.css" />
+
+<div class="form" id="title">Project Edit Page</div>
+<div class="block" id="adminBlock2">
+  <span>
+    <label for="dateAB">Select Start and End Date</label><br />
+    <input
+      onchange="updatePersonA()"
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MinDate.."
+      autocomplete="off"
+      id="dateABMin"
+      onblur="changeReport();"
+    />
+    <input
+      onchange="updatePersonA()"
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MaxDate.."
+      autocomplete="off"
+      id="dateABMax"
+      onblur="changeReport();"
+    /><br />
+    <label for="pnameAB">Select Name</label><br />
+    <input
+      onchange="updatePersonA()"
+      required
+      type="text"
+      class="formInput, dropInput"
+      placeholder="Search by Name.."
+      autocomplete="off"
+      id="pnameAB"
+      onblur="changeReport();"
+    /> </span
+  ><br />
+  <div id="projectsA"></div>
+  <button type="button" class="formButton" id="extendA">▼</button>
+</div>

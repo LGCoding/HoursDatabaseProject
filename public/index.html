@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hour Reporter</title>
+    <script src="moment.js"></script>
+    <script src=".\chart.js\dist\chart.js"></script>
+    <script src="print.min.js"></script>
+    <script src="app.js"></script>
+    <script src="zip.js"></script>
+    <link rel="stylesheet" href="print.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="./favicon.png" type="image/png" />
+  </head>
+
+  <body onclick="bodyClick()">
+    <!-- Top stuff -->
+    <div class="topnav" id="myTopnav">
+      <a onclick="homeSwitch(this) " type="button" id="homeB" class="active"
+        >Home</a
+      >
+
+      <a onclick="hourEditSwitch(this)" type="button" id="pastB" class=""
+        >Past hours</a
+      >
+
+      <a onclick="reportSwitch(this)" type="button" id="reportB" class=""
+        >Reports</a
+      >
+
+      <a onclick="addProjectSwitch(this)" type="button" id="adminB" class=""
+        >Add project</a
+      >
+
+      <a onclick="editProjectsSwitch(this)" type="button" id="adminCB" class=""
+        >Edit project</a
+      >
+
+      <a onclick="addPersonSwitch(this)" type="button" id="addPB" class=""
+        >Add Person</a
+      >
+
+      <a onclick="editPersonSwitch(this)" type="button" id="editPB" class=""
+        >Edit Person</a
+      >
+      <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i>&#8801;</i>
+      </a>
+    </div>
+    <br />
+    <div class="form" id="title">Hours Input Page</div>
+    <br />
+
+    <!-- User Form -->
+    <div class="form" id="formUser">
+      <div class="block" id="block1">
+        <label for="project2">Full Name:</label><br />
+        <span
+          name="project2"
+          class="dropdown,formInput"
+          onclick="openDropDown(1)"
+          onmouseout="isoffDrop=true"
+          onmouseover="isoffDrop=false"
+        >
+          <input
+            required
+            type="text"
+            class="formInput, dropInput"
+            placeholder="Name.."
+            autocomplete="off"
+            id="adminFormDropInput"
+            onkeyup="filterFunction(1)"
+          />
+          <span id="adminDropDown" class="dropdown-content"> </span> </span
+        ><br />
+
+        <label for="hours">Hours:</label><br />
+        <input
+          required
+          class="formInput"
+          min=".25"
+          max="24"
+          step=".25"
+          type="number"
+          id="hours"
+          name="hours"
+          value="3"
+        /><br />
+        <label for="day">Day:</label><br />
+        <input
+          required
+          class="formInput"
+          type="date"
+          id="day"
+          name="day"
+          value=""
+        /><br />
+        <label for="project">Project (chose a project in the list):</label
+        ><br />
+        <span
+          name="project"
+          class="dropdown,formInput"
+          onclick="openDropDown(0)"
+          onmouseout="isoffDrop=true"
+          onmouseover="isoffDrop=false"
+        >
+          <input
+            required
+            type="text"
+            class="formInput, dropInput"
+            placeholder="Project.."
+            autocomplete="off"
+            id="basicFormDropInput"
+            onkeyup="filterFunction(0)"
+          />
+          <span id="basicDropDown" class="dropdown-content"> </span> </span
+        ><br />
+        <label for="comment">Comments:</label><br />
+        <span
+          type="text"
+          class="formInput"
+          id="comment"
+          name="comment"
+          contenteditable="true"
+        >
+        </span
+        ><br />
+        <button
+          class="formButton"
+          style="display: none"
+          id="deleteHour"
+          type="button"
+        >
+          Delete
+        </button>
+
+        <input
+          class="formButton"
+          id="hourNewSubmit"
+          type="button"
+          value="Submit"
+        />
+      </div>
+
+      <div style="display: none" class="block" id="block2">
+        <span>
+          <label for="dateB2">Select Start and End Date</label><br />
+          <input
+            onchange="updatePerson()"
+            required
+            type="date"
+            class="formInput, dateInput"
+            placeholder="MinDate.."
+            autocomplete="off"
+            id="dateB2Min"
+            onblur="changeReport();"
+          />
+          <input
+            onchange="updatePerson()"
+            required
+            type="date"
+            class="formInput, dateInput"
+            placeholder="MaxDate.."
+            autocomplete="off"
+            id="dateB2Max"
+            onblur="changeReport();"
+          /> </span
+        ><br />
+        <div id="projects"></div>
+        <button type="button" class="formButton" id="extend">▼</button>
+      </div>
+    </div>
+
+    <!-- Admin -->
+    <div class="form" id="adminForm" style="display: none">
+      <div style="display: none" class="block" id="adminBlock1">
+        <label for="projectNameInput">Project Name:</label><br />
+        <input
+          required
+          type="text"
+          class="formInput, dropInput"
+          placeholder="Name.."
+          autocomplete="off"
+          id="projectNameInput"
+        />
+        <label for="sday">Start Date:</label><br />
+        <input
+          class="formInput"
+          type="date"
+          id="sday"
+          name="day"
+          value=""
+        /><br />
+        <label for="eday">End Date:</label><br />
+        <input
+          class="formInput"
+          type="date"
+          id="eday"
+          name="day"
+          value=""
+        /><br />
+        <label for="commentAdmin">Comments:</label><br />
+        <span
+          type="text"
+          class="formInput"
+          id="commentAdmin"
+          name="comment"
+          contenteditable="true"
+        >
+        </span
+        ><br />
+        <input
+          class="formButton"
+          id="projectNewSubmit"
+          type="button"
+          value="Submit"
+        />
+        <button
+          class="formButton"
+          style="display: none"
+          id="deleteProject"
+          type="button"
+        >
+          Delete
+        </button>
+        <button
+          class="formButton"
+          style="display: none"
+          id="toggleProjectActive"
+          type="button"
+        >
+          Toggle Active
+        </button>
+      </div>
+      <div style="display: none" class="block" id="adminBlock2">
+        <span>
+          <label for="pnameAB">Select Name</label><br />
+          <input
+            onchange="updatePersonA()"
+            required
+            type="text"
+            class="formInput, dropInput"
+            placeholder="Search by Name.."
+            autocomplete="off"
+            id="pnameAB"
+            onblur="changeReport();"
+          /> </span
+        ><br />
+        <div id="projectsA"></div>
+        <button type="button" class="formButton" id="extendA">▼</button>
+      </div>
+    </div>
+
+    <div class="form" id="personForm" style="display: none">
+      <div style="display: none" class="block" id="personBlock1">
+        <label for="personNameInput">Full Name:</label><br />
+        <input
+          required
+          type="text"
+          class="formInput, dropInput"
+          placeholder="Name.."
+          autocomplete="off"
+          id="personNameInput"
+        />
+        <label for="personEmailInput">Email:</label><br />
+        <input
+          required
+          type="email"
+          class="formInput, dropInput"
+          placeholder="Email.."
+          autocomplete="off"
+          id="personEmailInput"
+        />
+        <label for="permissionValue">Permission Level:</label><br />
+        <input
+          required
+          type="number"
+          max="3"
+          min="0"
+          class="formInput"
+          autocomplete="off"
+          value="0"
+          id="permissionValue"
+        /><br />
+        <div class="login-dropdown">
+          <button id="logButton2" class="login-dropbtn">Club Member</button>
+          <div id="memberType2" v="0" class="login-dropdown-content">
+            <a
+              onclick="event.preventDefault();document.getElementById('memberType2').setAttribute('v', '0');document.getElementById('logButton2').innerHTML = 'Club Member';"
+              >Club Member</a
+            >
+            <a
+              onclick="event.preventDefault();document.getElementById('memberType2').setAttribute('v', '1');document.getElementById('logButton2').innerHTML = 'Non Weston Memeber';"
+              >Non Weston Memeber</a
+            >
+            <a
+              onclick="event.preventDefault();document.getElementById('memberType2').setAttribute('v', '2');document.getElementById('logButton2').innerHTML = 'Non Member Adult';"
+              >Non Member Adult</a
+            >
+            <a
+              onclick="event.preventDefault();document.getElementById('memberType2').setAttribute('v', '3');document.getElementById('logButton2').innerHTML = 'Non Member Kid Interact';"
+              >Non Member Kid Interact</a
+            >
+            <a
+              onclick="event.preventDefault();document.getElementById('memberType2').setAttribute('v', '4');document.getElementById('logButton2').innerHTML = 'Non Member Kid';"
+              >Non Member Kid</a
+            >
+          </div>
+        </div>
+        <br />
+        <label for="personPassInput">Password:</label><br />
+        <input
+          type="text"
+          class="formInput, dropInput"
+          placeholder="Password.."
+          autocomplete="off"
+          id="personPassInput"
+        />
+        <input
+          class="formButton"
+          id="personNewSubmit"
+          type="button"
+          value="Submit"
+        />
+        <div>The password will defualt "PleaseChange.1"</div>
+        <button
+          class="formButton"
+          style="display: none"
+          id="deletePerson"
+          type="button"
+        >
+          Delete
+        </button>
+        <button
+          class="formButton"
+          style="display: none"
+          id="togglePersonActive"
+          type="button"
+        >
+          Toggle Active
+        </button>
+      </div>
+      <div style="display: none" class="block" id="personBlock2">
+        <span>
+          <label for="pnamePB">Select Name</label><br />
+          <input
+            onchange="updatePersonP()"
+            required
+            type="text"
+            class="formInput, dropInput"
+            placeholder="Search by Name.."
+            autocomplete="off"
+            id="pnamePB"
+            onblur="changeReport();"
+          /> </span
+        ><br />
+        <div id="projectsP"></div>
+        <button type="button" class="formButton" id="extendP">▼</button>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="form, block" id="Reports" style="display: block">
+      <br />
+      <br />
+      <span
+        id="reportTypes"
+        onchange="changeReport()"
+        style="display: inline-flex"
+      >
+        <span>
+          <input
+            type="radio"
+            name="reportsR"
+            id="leaderBoard"
+            value="leaderBoard"
+            checked
+          />
+          <label class="radioLab" for="leaderBoard"> Hours Leader Board </label
+          ><br />
+        </span>
+        <span>
+          <input type="radio" name="reportsR" id="person" value="person" />
+          <label class="radioLab" for="person"> Hours by Person </label><br />
+        </span>
+        <span>
+          <input type="radio" name="reportsR" id="project" value="project" />
+          <label class="radioLab" for="project"> Hours by Project </label><br />
+        </span>
+        <span>
+          <input type="radio" name="reportsR" id="club" value="club" />
+          <label class="radioLab" for="club">Total club hours </label>
+        </span>
+        <span>
+          <input type="checkbox" id="isByDay" value="isByDay" />
+          <label id="days" class="radioLab" for="isByDay">Day</label>
+        </span>
+        <span>
+          <input type="checkbox" id="isPie" value="isPie" />
+          <label id="piesss" class="radioLab" for="isPie">Pie</label>
+        </span> </span
+      ><br />
+
+      <span>
+        <label for="MinDateInput">Select Start Date</label><br />
+        <input
+          required
+          type="date"
+          class="formInput, dateInput"
+          placeholder="MinDate.."
+          autocomplete="off"
+          id="minDateInput"
+          onblur="changeReport();"
+        /> </span
+      ><br />
+      <span
+        ><label for="maxDateInput">Select End Date:</label><br />
+        <input
+          required
+          type="date"
+          class="formInput, dateInput"
+          placeholder="MinDate.."
+          autocomplete="off"
+          id="maxDateInput"
+          onblur="changeReport();" /></span
+      ><br />
+      <span
+        ><label for="project3">Select a Person or Project:</label><br />
+        <span
+          name="project3"
+          class="dropdown,formInput"
+          onclick="openDropDown(2); changeReport();"
+          onmouseout="isoffDrop=true"
+          onmouseover="isoffDrop=false"
+        >
+          <input
+            required
+            type="text"
+            class="formInput, dropInput"
+            placeholder="Project.."
+            autocomplete="off"
+            id="reportFormDropInput"
+            onkeyup="filterFunction(2)"
+          />
+          <span id="reportDropDown" class="dropdown-content">
+          </span> </span></span
+      ><br />
+      <canvas id="reportArea"></canvas>
+      <button
+        onclick="printG()"
+        type="button"
+        id="PrintReports"
+        class="formButton"
+      >
+        Print Graph
+      </button>
+      <button onclick="picG(this)" id="imageReports" class="formButton">
+        Download Picture
+      </button>
+      <button
+        onclick="downloadXlsx()"
+        type="button"
+        id="Download"
+        class="formButton"
+      >
+        Download Data
+      </button>
+      <!-- <button onclick="embed()" type="button" id="embed" class="formButton">
+        Get Embed Link
+      </button> -->
+    </div>
+    <div id="loginOuterDiv">
+      <div id="loginDiv">
+        Login
+        <input
+          type="email"
+          id="emailInput"
+          class="formInput dropInput"
+          placeholder="Email.."
+        />
+        <div id="namesdf">
+          <input
+            id="nameInput"
+            type="text"
+            class="formInput dropInput"
+            placeholder="Name.."
+          />
+          <div class="login-dropdown">
+            <button id="logButton" class="login-dropbtn">Club Member</button>
+            <div id="memberType" v="0" class="login-dropdown-content">
+              <a
+                onclick="event.preventDefault();document.getElementById('memberType').setAttribute('v', '0');document.getElementById('logButton').innerHTML = 'Club Member';"
+                >Club Member</a
+              >
+              <a
+                onclick="event.preventDefault();document.getElementById('memberType').setAttribute('v', '1');document.getElementById('logButton').innerHTML = 'Non Weston Memeber';"
+                >Non Weston Memeber</a
+              >
+              <a
+                onclick="event.preventDefault();document.getElementById('memberType').setAttribute('v', '2');document.getElementById('logButton').innerHTML = 'Non Member Adult';"
+                >Non Member Adult</a
+              >
+              <a
+                onclick="event.preventDefault();document.getElementById('memberType').setAttribute('v', '3');document.getElementById('logButton').innerHTML = 'Non Member Kid Interact';"
+                >Non Member Kid Interact</a
+              >
+              <a
+                onclick="event.preventDefault();document.getElementById('memberType').setAttribute('v', '4');document.getElementById('logButton').innerHTML = 'Non Member Kid';"
+                >Non Member Kid</a
+              >
+            </div>
+          </div>
+          <br />
+          <input
+            style="margin-top: 5px"
+            type="password"
+            id="password1Input"
+            class="formInput dropInput"
+            placeholder="Password.."
+          />
+        </div>
+        <input
+          style="margin-top: 5px"
+          type="password"
+          id="password2Input"
+          class="formInput dropInput"
+          placeholder="Password.."
+        />
+        <!-- <input
+          style="margin: 5px"
+          class="formButton"
+          type="button"
+          value="Don't Have an Account"
+          id="signLog"
+          v="0"
+          onclick="this.value = (this.getAttribute('v') === '0') ? 'Already have an account' : `Don't Have an Account`;
+           this.setAttribute('v',(this.getAttribute('v') === '0') ? '1' : '0');
+           document.getElementById('namesdf').style.display = ('v',(this.getAttribute('v') === '0') ? 'none' : 'block'); "
+        /> -->
+        <input
+          style="margin: 5px"
+          class="formButton"
+          type="button"
+          onclick="logSign()"
+          value="Submit"
+        />
+      </div>
+    </div>
+    <div id="popupDiv">
+      <div id="suff" style="display: none;" class="popup" >
+        <span>
+          <label for="MinDateInputSpread">Select Start Date</label><br />
+          <input
+            required
+            type="date"
+            class="formInput, dateInput"
+            placeholder="MinDate.."
+            autocomplete="off"
+            id="minDateInputSpread"
+          /> </span
+        ><br />
+        <span
+          ><label for="maxDateInputSpread">Select End Date:</label><br />
+          <input
+            required
+            type="date"
+            class="formInput, dateInput"
+            placeholder="MinDate.."
+            autocomplete="off"
+            id="maxDateInputSpread"
+        ><br />
+        <span
+          ><label for="project4">Select a Project:</label><br />
+          <span
+            name="project4"
+            class="dropdown,formInput"
+            onclick="openDropDown(3);"
+            onmouseout="isoffDrop=true"
+            onmouseover="isoffDrop=false"
+          >
+            <input
+              required
+              type="text"
+              class="formInput, dropInput"
+              placeholder="Project.."
+              autocomplete="off"
+              id="SpreadProjectFormDropInput"
+              onkeyup="filterFunction(3)"
+            />
+            <span id="SpreadProjectDropDown" class="dropdown-content">
+            </span> </span></span
+        ><br />
+        <span
+          ><label for="project5">Select a Person:</label><br />
+          <span
+            name="project5"
+            class="dropdown,formInput"
+            onclick="openDropDown(4);"
+            onmouseout="isoffDrop=true"
+            onmouseover="isoffDrop=false"
+          >
+            <input
+              required
+              type="text"
+              class="formInput, dropInput"
+              placeholder="Person.."
+              autocomplete="off"
+              id="SpreadPersonFormDropInput"
+              onkeyup="filterFunction(4)"
+            />
+            <span id="SpreadPersonDropDown" class="dropdown-content">
+            </span> </span></span
+        ><br />
+        <input type="button" value="Get Data" onclick="getData()">
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,117 @@
+<style>
+  #reportTypes {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #reportArea {
+    background-color: aliceblue;
+    border-style: outset;
+    border: 2%;
+    color: black;
+    opacity: 1;
+    height: 70vh;
+    margin-top: 10px;
+  }
+</style>
+<link rel="stylesheet" href="../../global.css" />
+
+<div class="form" id="title">Report Page</div>
+<div class="form, block" id="Reports" style="display: block">
+  <br />
+  <br />
+  <span id="reportTypes" onchange="changeReport()" style="display: inline-flex">
+    <span>
+      <input
+        type="radio"
+        name="reportsR"
+        id="leaderBoard"
+        value="leaderBoard"
+        checked
+      />
+      <label class="radioLab" for="leaderBoard"> Hours Leader Board </label
+      ><br />
+    </span>
+    <span>
+      <input type="radio" name="reportsR" id="person" value="person" />
+      <label class="radioLab" for="person"> Hours by Person </label><br />
+    </span>
+    <span>
+      <input type="radio" name="reportsR" id="project" value="project" />
+      <label class="radioLab" for="project"> Hours by Project </label><br />
+    </span>
+    <span>
+      <input type="radio" name="reportsR" id="club" value="club" />
+      <label class="radioLab" for="club">Total club hours </label>
+    </span>
+    <span>
+      <input type="checkbox" id="isByDay" value="isByDay" />
+      <label id="days" class="radioLab" for="isByDay">Day</label>
+    </span>
+    <span>
+      <input type="checkbox" id="isPie" value="isPie" />
+      <label id="piesss" class="radioLab" for="isPie">Pie</label>
+    </span> </span
+  ><br />
+
+  <span>
+    <label for="MinDateInput">Select Start Date</label><br />
+    <input
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MinDate.."
+      autocomplete="off"
+      id="minDateInput"
+      onblur="changeReport();"
+    /> </span
+  ><br />
+  <span
+    ><label for="maxDateInput">Select End Date:</label><br />
+    <input
+      required
+      type="date"
+      class="formInput, dateInput"
+      placeholder="MinDate.."
+      autocomplete="off"
+      id="maxDateInput"
+      onblur="changeReport();" /></span
+  ><br />
+  <span
+    ><label for="project3">Select a Person or Project:</label><br />
+    <span
+      name="project3"
+      class="dropdown,formInput"
+      onclick="openDropDown(2); changeReport();"
+      onmouseout="isoffDrop=true"
+      onmouseover="isoffDrop=false"
+    >
+      <input
+        required
+        type="text"
+        class="formInput, dropInput"
+        placeholder="Project.."
+        autocomplete="off"
+        id="reportFormDropInput"
+        onkeyup="filterFunction(2)"
+      />
+      <span id="reportDropDown" class="dropdown-content"> </span> </span></span
+  ><br />
+  <canvas id="reportArea"></canvas><br />
+  <button onclick="printG()" type="button" id="PrintReports" class="formButton">
+    Print Graph
+  </button>
+  <button onclick="picG(this)" id="imageReports" class="formButton">
+    Download Picture
+  </button>
+  <button
+    onclick="downloadXlsx()"
+    type="button"
+    id="Download"
+    class="formButton"
+  >
+    Download Data
+  </button>
+  <button onclick="embed()" type="button" id="embed" class="formButton">
+    Get Embed Link
+  </button>
+</div>

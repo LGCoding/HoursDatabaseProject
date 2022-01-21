@@ -1,0 +1,21 @@
+<style></style>
+<link rel="stylesheet" href="../../../global.css" />
+
+<div class="form" id="title">User Editor</div>
+<div class="block" id="personBlock2">
+  <span>
+    <label for="pnamePB">Select Name</label><br />
+    <input
+      onchange="updatePersonP()"
+      required
+      type="text"
+      class="formInput, dropInput"
+      placeholder="Search by Name.."
+      autocomplete="off"
+      id="pnamePB"
+      onblur="changeReport();"
+    /> </span
+  ><br />
+  <div id="projectsP"></div>
+  <button type="button" class="formButton" id="extendP">▼</button>
+</div>
