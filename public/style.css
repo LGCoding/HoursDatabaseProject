@@ -17,7 +17,7 @@
   color: black;
   opacity: 1;
   display: block;
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 .dropInput:disabled {
@@ -197,7 +197,7 @@ body {
   left: 0;
   top: 0;
   padding: 0.5rem;
-  text-align: center;
+  text-align: left;
   position: absolute;
   pointer-events: none;
 }
@@ -231,7 +231,7 @@ html {
   font-size: 1rem;
   display: block;
   word-wrap: break-word;
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 #commentAdmin {
@@ -240,7 +240,7 @@ html {
   min-height: 5rem;
   font-size: 1rem;
   display: block;
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 #commentPerson {
@@ -249,7 +249,7 @@ html {
   min-height: 5rem;
   font-size: 1rem;
   display: block;
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 #reportTypes {
@@ -269,7 +269,7 @@ html {
 }
 
 .form {
-  text-align: center;
+  text-align: left;
   /* background-color: aliceblue;
     border-radius: 30px;
     border-color: rgb(82, 86, 88);
@@ -279,7 +279,7 @@ html {
 }
 
 .block {
-  text-align: center;
+  text-align: left;
   background-color: aliceblue;
   border-radius: 30px;
   border-color: rgb(82, 86, 88);
@@ -311,10 +311,10 @@ input:disabled::placeholder {
 
 #projects {
   background-color: rgb(149, 206, 255);
-  width: 75%;
-  text-align: center;
+  /* width: 75%; */
+  text-align: left;
   display: block;
-  margin: 0 auto;
+  margin: 0 0;
   margin-top: 10px;
   padding: 5px;
   border-radius: 5px;
@@ -361,7 +361,7 @@ br {
   float: left;
   display: block;
   color: rgb(0, 73, 138);
-  text-align: center;
+  text-align: left;
   padding: 1rem 1rem;
   text-decoration: none;
   font-size: 1rem;
@@ -478,7 +478,7 @@ br {
   color: rgb(0, 80, 162);
   font-weight: bolder;
   font-size: 2rem;
-  text-align: center;
+  text-align: left;
   overflow-y: auto;
 }
 
@@ -532,4 +532,8 @@ br {
 
 .login-dropdown:hover .login-dropbtn {
   background-color: #ddd;
+}
+
+.extend {
+  margin-left: calc(50% - 1rem);
 }

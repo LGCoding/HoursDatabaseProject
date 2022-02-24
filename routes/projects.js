@@ -715,7 +715,7 @@ router.put("/:id/:pid/:hid", authHelper.checkAuth, function (req, res, next) {
 
   joi.validate(req.body, schema, function (err) {
     if (err) {
-      let err = new Error("Invalid field: display name 3 to 50 alpanumeric");
+      //let err = new Error("Invalid field: display name 3 to 50 alpanumeric");
       err.status = 400;
       return next(err);
     }
