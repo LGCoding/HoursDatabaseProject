@@ -379,9 +379,7 @@ function addHour() {
     cFetch(
       "projects/" + id + "/" + pId + "/" + currentEdit,
       {
-        date: new Date(document.getElementById("day").value)
-          ? new Date(document.getElementById("day").value)
-          : new Date(),
+        date: new Date(document.getElementById("day").value),
         hours: parseFloat(document.getElementById("hours").value),
         comment: document.getElementById("comment").innerHTML,
       },
@@ -898,6 +896,7 @@ function edit(e) {
   block1O.style.display = "block";
   block2O.style.display = "none";
   deleteHourO.style.display = "block";
+  console.log(hoursDone[e.value]);
   document.getElementById("day").value = hoursDone[e.value].date;
   document.getElementById("hours").value = hoursDone[e.value].hours;
   document.getElementById("comment").innerHTML = hoursDone[e.value].comment;
