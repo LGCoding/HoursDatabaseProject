@@ -375,10 +375,13 @@ function addHour() {
         makePopup(err.message);
       });
   } else {
+    console.log(new Date(document.getElementById("day").value));
     cFetch(
       "projects/" + id + "/" + pId + "/" + currentEdit,
       {
-        date: new Date(document.getElementById("day").value),
+        date: new Date(document.getElementById("day").value)
+          ? new Date(document.getElementById("day").value)
+          : new Date(),
         hours: parseFloat(document.getElementById("hours").value),
         comment: document.getElementById("comment").innerHTML,
       },
